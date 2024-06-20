@@ -1,1 +1,1 @@
-export const endPoint="http://localhost:8200"
+export const endPoint="https://podstream-2cce.onrender.com"
