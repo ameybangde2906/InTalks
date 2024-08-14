@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
 const corsOptions = {
-    origin: 'http://localhost:5000',
+    origin: 'https://intalks.onrender.com',
     credentials: true,
 };
 app.use(cors(corsOptions));
