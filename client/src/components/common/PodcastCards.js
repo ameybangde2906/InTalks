@@ -2,10 +2,9 @@ import styled from 'styled-components';
 import PodcastCard from './PodcastCard';
 import Playlists from './Playlists';
 import useGetUploadData from '../../hooks/useGetUploadData'
+import CardSkeleton from '../skeletons/CardSkeleton';
 
 const DashboardMain = styled.div`
-  padding: 20px 30px;
-  padding-bottom: 200px;
   height: 100%;
   overflow-y: scroll;
   display: flex;
@@ -19,7 +18,6 @@ const DashboardMain = styled.div`
 const FilterContainer = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: ${({ theme }) => theme.bg};
   border-radius: 10px;
   padding: 20px 30px;
 `;
@@ -32,6 +30,7 @@ const Topic = styled.div`
   justify-content: space-between;
   text-transform: capitalize;
   align-items: center;
+  margin-bottom: 20px;
   @media (max-width: 768px) {
     font-size: 18px;
   }
@@ -80,41 +79,58 @@ const PodcastCards = ({ feedType, userId, query }) => {
 
   const POST_ENDPOINTS = getPostEndPoint();
 
-  const { uploads,isError } = useGetUploadData(POST_ENDPOINTS, feedType, userId,query);
+  const { uploads, isError, isgettingData, isRefetchingData } = useGetUploadData(POST_ENDPOINTS, feedType, userId, query);
 
   const isUploadsArray = Array.isArray(uploads);
 
+  const skeletonCount = uploads ? uploads?.length : 8;
+
   return (
     <DashboardMain>
+
+      <FilterContainer>
       <Topic>
         {feedType === undefined ? "For you" : feedType}
       </Topic>
-      <FilterContainer>
 
-        {feedType !== "playlists" && <Podcasts>
-          {!isUploadsArray || uploads.length === 0 || isError ? (
-            <ErrorText className='text-center my-4'>No podcasts in this tab. Switch 👻</ErrorText>
-          ) : (
-            <div className='flex gap-4 flex-wrap justify-center'>
-              {uploads.map((upload) => (
-                <PodcastCard key={upload._id} upload={upload} />
+        {(isgettingData || isRefetchingData) && (
+          <Podcasts>
+            <div className='flex gap-6 flex-wrap justify-center'>
+              {[...Array(skeletonCount)].map((_, index) => (
+                <CardSkeleton key={index} />
               ))}
             </div>
-          )}
-        </Podcasts>}
-        
+          </Podcasts>
+        )}
 
-        {feedType === "playlists" && <Podcasts>
-          {!isUploadsArray || uploads.length === 0  ? (
-            <ErrorText className='text-center my-4'>No podcasts in this tab. Switch 👻</ErrorText>
-          ) : (
-            <div className='flex gap-4 flex-wrap justify-center'>
-              {uploads.map((upload) => (
-                <Playlists upload={upload} />
-              ))}
-            </div>
-          )}
-        </Podcasts>}
+
+        {!isgettingData && !isRefetchingData && (<div>
+          {feedType !== "playlists" && <Podcasts>
+            {!isUploadsArray || uploads.length === 0 || isError ? (
+              <ErrorText className='text-center my-4'>No podcasts in this tab. Switch 👻</ErrorText>
+            ) : (
+              <div className='flex gap-6 flex-wrap justify-center'>
+                {uploads.map((upload) => (
+                  <PodcastCard key={upload._id} upload={upload} isgettingData={isgettingData} isRefetchingData={isRefetchingData} />
+                ))}
+              </div>
+            )}
+          </Podcasts>}
+
+
+          {feedType === "playlists" && <Podcasts>
+            {!isUploadsArray || uploads.length === 0 ? (
+              <ErrorText className='text-center my-4'>No podcasts in this tab. Switch 👻</ErrorText>
+            ) : (
+              <div className='flex gap-4 flex-wrap justify-center'>
+                {uploads.map((upload) => (
+                  <Playlists upload={upload} />
+                ))}
+              </div>
+            )}
+          </Podcasts>}
+        </div>)}
+
 
       </FilterContainer>
     </DashboardMain>

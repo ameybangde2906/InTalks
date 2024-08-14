@@ -7,10 +7,11 @@ import { endPoint } from '../../utils/Constants'
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { openSignin } from '../../redux/slices/setSignInSlice'
+import { getInitials } from '../../utils/Initials'
 
 const Container = styled.div`
 width: 100%;
-padding: 30px 0 20px 20px ;
+padding: 30px 0 70px 20px ;
 color: ${({ theme }) => theme.text_secondary};
 `
 const Title = styled.div`
@@ -34,7 +35,10 @@ margin: 10px 0;
 `
 const UserImg = styled.div`
 border-radius: 50%;
-border:1px solid ${({ theme }) => theme.text_secondary};
+font-size: 14px;
+font-weight: 700;
+color:${({ theme }) => theme.bg};
+background-color: ${({ theme }) => theme.text_primary};
 width: 30px;
 height: 30px;
 display: flex;
@@ -44,32 +48,36 @@ align-items: center;
 const Img = styled.img`
 width: 30px;
 height: 30px;
+border-radius: 50%;
 `
 const Input = styled.input`
 &:focus{outline:none}
 border:1px solid ${({ theme }) => theme.text_secondary};
 border-radius: 10px;
 width: 60%;
-color:  ${({ theme }) => theme.bgLight};
+color:  ${({ theme }) => theme.text_secondary};
 font-size: 14px;
-padding: 3px;
+padding: 3px 3px 3px 8px;
 `
 const Button = styled.button`
 width: 100px;
 padding: 7px;
-background-color: ${({ theme }) => theme.primary};
-color: ${({ theme }) => theme.bg};
+background: ${({ theme }) => theme.button_text};
+color: ${({ theme }) => theme.text_primary};
 border-radius: 12px;
 font-size: 13px;
+font-weight: 500;
 `
 const UserInfo = styled.div`
 `
 const Name = styled.div`
 font-weight:500;
+font-size: 13px;
+width: 150px;
 `
 const Date = styled.div`
 font-size: 11px;
-margin-left: 40%;
+margin-left: 20px;
 `
 const Text = styled.div`
 font-size: 14px;
@@ -124,16 +132,17 @@ const CommentSection = ({ data }) => {
 
     return (
         <Container>
-
             <Title>{data?.comments?.length} Comments</Title>
 
             <Hr />
 
             <WriteComment>
                 <Link to={`/profile/${authUser?._id}`}>
-                    <UserImg>
-                        {data?.user?.profileImg !== "" ? <Person /> : <Img src={data?.user?.profileImg} />}
+                   {authUser? <UserImg>
+                        {authUser?.profileImage !== "" || null ? <Img src={authUser?.profileImage}/> : <div> {getInitials(authUser?.fullname)}</div>   }
                     </UserImg>
+                    :
+                    <UserImg><Person/></UserImg>}
                 </Link>
                 <Input value={comment} onChange={(e) => { setComment(e.target.value) }} placeholder='Add a comment...' />
                 {authUser ?
@@ -151,7 +160,7 @@ const CommentSection = ({ data }) => {
             {data?.comments?.map((comment) => (
                 <Box>
                     <Link to={`/profile/${comment?.user?._id}`}>
-                        <UserImg> {comment?.user?.profileImg !== "" ? <Person /> : <Img src={comment?.user?.profileImg} />}</UserImg>
+                        <UserImg> {comment?.user?.profileImage !== "" || null ? <Img src={comment?.user?.profileImage} /> : <div>{getInitials(comment?.user?.fullname)}</div>}</UserImg>
                     </Link>
 
                     <UserInfo>

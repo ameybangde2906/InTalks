@@ -2,18 +2,24 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
     username: {
-        type:String,
-        required:true,
-        unique:true,
+        type: String,
+        required: true,
+        unique: true,
     },
-    fullname:{
-        type:String,
-        required:true,
+    googleId: {
+        type: String,
+        unique: true
+    },
+    fullname: {
+        type: String,
+        required: true,
     },
     password: {
-        type:String,
-        required:true,
-        minLength:6,
+        type: String,
+        required: function () {
+            return !this.googleId; // Password is required only if googleId is not present
+        },
+        minLength: 6,
     },
     email: {
         type: String,
@@ -22,31 +28,31 @@ const userSchema = new mongoose.Schema({
     },
     subscribers: [
         {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"User",
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
             default: []
         }
     ],
     subscribing: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref:"User",
-            default:[]
+            ref: "User",
+            default: []
         }
     ],
-    profileImage:{
-        type:String,
+    profileImage: {
+        type: String,
         default: null,
     },
-    coverImage:{
-        type:String,
-        default:null,
+    coverImage: {
+        type: String,
+        default: null,
     },
-    likedPosts:[
+    likedPosts: [
         {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Upload",
-            default:[]
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Upload",
+            default: []
         },
     ],
     savedPosts: [
@@ -56,7 +62,7 @@ const userSchema = new mongoose.Schema({
             default: []
         }
     ],
-}, {timestamps:true})  
+}, { timestamps: true })
 
 const User = mongoose.model("User", userSchema);
 

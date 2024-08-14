@@ -1,4 +1,4 @@
-import { CalendarMonth, Check, Edit, LogoutOutlined } from '@mui/icons-material';
+import { CalendarMonth, Check, CloudUpload, Edit, LogoutOutlined } from '@mui/icons-material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -11,9 +11,11 @@ import useUpdateUserProfile from '../../hooks/useUpdateUserProfile';
 import sampleCover from '../../images/cover.jpeg';
 import { useDispatch } from 'react-redux';
 import { openSignin } from '../../redux/slices/setSignInSlice';
+import { openUpload } from '../../redux/slices/setUploadPodcast';
+import ProfileSkeleton from '../../components/skeletons/ProfileSkeleton';
 
 const Container = styled.div`
-  padding: 0 8%;
+  padding: 0 4%;
   font-family: Arial, sans-serif;
   overflow-x: auto;
 `;
@@ -21,12 +23,12 @@ const Container = styled.div`
 const ProfileSection = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 3%;
 `;
 const CoverImage = styled.img`
-width: 95%;
+width: 94%;
 height: 100%;
-margin-top: 2%;
+margin: 2% 2.5%;
 border-radius: 20px;
 color:${({ theme }) => theme.text_primary};
 @media (max-width:700px) {
@@ -35,10 +37,10 @@ color:${({ theme }) => theme.text_primary};
   }
 `
 const ProfileImage = styled.img`
-  width: 210px;
-  height: 210px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
-  border: 1px solid ${({ theme }) => theme.text_primary};
+  border: 1px solid transparent;
   @media (max-width:700px) {
     width: 150px;
     height: 150px;
@@ -48,15 +50,23 @@ const ProfileImage = styled.img`
 const Initials = styled.div`
 position: absolute;
 top: 50%;
-left: 55%;
+left: 50%;
 transform: translate(-50%,-50%);
-letter-spacing: 10px; 
-color:${({ theme }) => theme.primary};
+letter-spacing: 3px; 
+background-color: ${({ theme }) => theme.text_primary};
+color:${({ theme }) => theme.bg};
+border:1px solid ${({ theme }) => theme.primary};
+display: flex;
+justify-content: center;
+align-items:center;
 font-size: 50px;
 font-weight: 800;
+border-radius: 50%;
+width: 180px;
+height: 180px;
 `
 const ProfileDetails = styled.div`
-padding: 3% 5%;
+padding: 3% 3%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -68,7 +78,7 @@ padding: 3% 5%;
 
 const UserName = styled.h1`
 font-size: 30px;
-font-weight: 700;
+font-weight: 900;
 color:${({ theme }) => theme.text_primary};
 text-transform: capitalize;
 @media (max-width:700px) {
@@ -101,9 +111,9 @@ letter-spacing: 1px;
   font-size: 12px;
   }
 `
-const LogoutButton = styled.button`
-color: ${({ theme }) => theme.text_primary};
-background-color:${({ theme }) => theme.primary};
+const CommonButton = styled.button`
+color: ${({ theme }) => theme.bg};
+background:${({ theme }) => theme.button_text};
 font-size: 14px;
 font-weight: 700;
 margin-top: 20px;
@@ -123,11 +133,30 @@ border-radius: 18px;
   font-size: 12px;
   }
 `
+const LogoutButton = styled.button`
+background-color: transparent;
+border: 1px solid rgb(20, 133, 220);
+color: rgb(20, 133, 220);
+font-size: 14px;
+font-weight: 700;
+margin-top: 20px;
+padding: 6px 20px;
+width: 100px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+border-radius: 18px;
+@media (max-width:700px) {
+  width: 80px;
+  font-size: 12px;
+  }
+`
 const SubscribeButton = styled.button`
 color: ${({ theme }) => theme.bg};
-background-color:${({ theme }) => theme.text_primary};
+background:${({ theme }) => theme.button_text};
 font-size: 14px;
-font-weight: 500;
+font-weight: 700;
 margin-top: 20px;
 padding: 6px 10px;
 width: 120px;
@@ -183,7 +212,7 @@ const Profile = () => {
   const { follow, isPending } = useFollow();
   const { updateProfile, isUpdatingProfile } = useUpdateUserProfile()
 
-  const { data: user, refetch } = useQuery({
+  const { data: user, refetch, isLoading, isRefetching } = useQuery({
     queryKey: ["userProfile"],
     queryFn: async () => {
       try {
@@ -246,126 +275,136 @@ const Profile = () => {
     dispatch(openSignin())
   }
 
+  const handleUpload = () => {
+    dispatch(openUpload())
+  }
+
   useEffect(() => {
     refetch()
   }, [userid, refetch])
 
   return (
-    <Container>
-      <div className=' h-[30%] relative group/cover'>
-        <CoverImage
-          src={coverImage || user?.coverImage || sampleCover}
-          alt="cover image"
-          onClick={() => coverImgRef.current.click()}
-        />
-
-        <div className='absolute top-[10%] right-[7%] bg-primary rounded-full group-hover/cover:opacity-100 opacity-0 cursor-pointer'>
-          {isMyProfile &&
-            (<Camera><Edit
-              className='w-4 h-4'
-              onClick={() => coverImgRef.current.click()}
-            /></Camera>)}
-        </div>
-      </div>
-
-      <ProfileSection>
-
-        <div className='rounded-full relative group/avatar'>
-          <ProfileImage
-            src={profileImage || user?.profileImage}
-            alt=""
-            onClick={() => profileImgRef.current.click()}
+    <>
+      {(isLoading || isRefetching) && <ProfileSkeleton></ProfileSkeleton>}
+      {!isLoading && !isRefetching && <Container>
+        { <div className=' h-[34%] relative group/cover '>
+          <CoverImage
+            src={coverImage || user?.coverImage || sampleCover}
+            alt="cover image"
           />
-          {!profileImage && !user?.profileImage && <Initials>{initials}</Initials>}
 
-          <div className='absolute top-[15%] right-[15%] bg-primary rounded-full group-hover/avatar:opacity-100 opacity-0 cursor-pointer'>
-            {isMyProfile &&
+          <div className='absolute top-[10%] right-[7%] bg-primary rounded-full group-hover/cover:opacity-100 opacity-0 cursor-pointer'>
+            {isMyProfile && authUser &&
               (<Camera><Edit
                 className='w-4 h-4'
-                onClick={() => profileImgRef.current.click()}
+                onClick={() => coverImgRef.current.click()}
               /></Camera>)}
           </div>
+        </div>}
 
-        </div>
+        <ProfileSection>
 
-        <input
-          type='file'
-          hidden
-          ref={coverImgRef}
-          onChange={(e) => handleImgChange(e, "coverImg")}
-        />
-        <input
-          type='file'
-          hidden
-          ref={profileImgRef}
-          onChange={(e) => handleImgChange(e, "profileImg")}
-        />
-        <ProfileDetails>
-          <UserName>{user?.fullname}</UserName>
-          <UserDetails>@{user?.username} . {user?.subscribers.length} subscribers . </UserDetails>
-          <Date><CalendarMonth sx={{ fontSize: 'medium' }} /> joined on - {formatDate(user?.createdAt)}</Date>
-          <UserEmail>{user?.email}</UserEmail>
+          <div className='rounded-full relative group/avatar'>
+            <ProfileImage
+              src={profileImage || user?.profileImage}
+              alt=""
+            />
+            {!profileImage && !user?.profileImage && <Initials>{initials}</Initials>}
 
-          <div className='flex gap-3'>
-            {isMyProfile && (coverImage || profileImage) &&
-              <LogoutButton
-                onClick={async (e) => {
-                  await updateProfile({ coverImage, profileImage });
-                  setProfileImage(null);
-                  setCoverImage(null);
-
-                }}>
-                {isUpdatingProfile ? "Updating..." : "Update"}
-              </LogoutButton>}
-            {isMyProfile &&
-              <LogoutButton
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(`/`)
-                  logout()
-
-                }}>
-                <LogoutOutlined sx={{ fontSize: 'large' }} /> Logout
-              </LogoutButton>}
+            <div className='absolute top-[15%] right-[15%] bg-primary rounded-full group-hover/avatar:opacity-100 opacity-0 cursor-pointer '>
+              {isMyProfile && authUser &&
+                (<Camera><Edit
+                  className='w-4 h-4'
+                  onClick={() => profileImgRef.current.click()}
+                /></Camera>)}
+            </div>
 
           </div>
 
+          <input
+            type='file'
+            hidden
+            ref={coverImgRef}
+            onChange={(e) => handleImgChange(e, "coverImg")}
+          />
+          <input
+            type='file'
+            hidden
+            ref={profileImgRef}
+            onChange={(e) => handleImgChange(e, "profileImg")}
+          />
+          <ProfileDetails>
+            <UserName>{user?.fullname}</UserName>
+            <UserDetails>@{user?.username} . {user?.subscribers.length} subscribers . </UserDetails>
+            <Date><CalendarMonth sx={{ fontSize: 'medium' }} /> joined on - {formatDate(user?.createdAt)}</Date>
+            <UserEmail>{user?.email}</UserEmail>
 
-          {!isMyProfile && authUser && <div onClick={() => follow(user?._id)}>
-            {!isPending && !amISubscribing && <SubscribeButton>Subscribe</SubscribeButton>}
-            {!isPending && amISubscribing && <SubscribeButton>Subscribed <Check fontSize='small' style={{ fontWeight: "bolder" }} /></SubscribeButton>}
-            {isPending && <SubscribeButton>...</SubscribeButton>}
-          </div>}
-          {!authUser && <SubscribeButton onClick={handleSignIn}>Subscribe</SubscribeButton>}
+            <div className='flex gap-3'>
+              {isMyProfile && (coverImage || profileImage) &&
+                <CommonButton
+                  onClick={async (e) => {
+                    await updateProfile({ coverImage, profileImage });
+                    setProfileImage(null);
+                    setCoverImage(null);
 
-        </ProfileDetails>
-      </ProfileSection>
-      <Buttons>
-        <Link to={`/profile/${userid}/videos`}>
-          <Button active={feedTypes === 'videos'} onClick={() => setFeedTypes('videos')}>Videos</Button>
-        </Link>
-        <Link to={`/profile/${userid}/playlists`}>
-          <Button active={feedTypes === 'playlists'} onClick={() => setFeedTypes('playlists')}>Playlists</Button>
-        </Link>
-        {isMyProfile && <Link to={`/profile/${userid}/saved`}>
-          <Button active={feedTypes === 'saved'} onClick={() => setFeedTypes('saved')}>Saved</Button>
-        </Link>}
-        {isMyProfile && <Link to={`/profile/${userid}/liked`}>
-          <Button active={feedTypes === 'liked'} onClick={() => setFeedTypes('liked')}>Liked</Button>
-        </Link>}
-      </Buttons>
+                  }}>
+                  {isUpdatingProfile ? "Updating..." : "Update"}
+                </CommonButton>
+              }
 
-      <VideosSection>
-        <Routes>
-          <Route path="/" element={<PodcastCards feedType={feedTypes} userId={userid} />} />
-          <Route path="videos" element={<PodcastCards feedType={feedTypes} userId={userid} />} />
-          <Route path="playlists" eelement={<PodcastCards feedType={feedTypes} userId={userid} />} />
-          {isMyProfile && <Route path="saved" element={<PodcastCards feedType={feedTypes} userId={userid} />} />}
-          {isMyProfile && <Route path="liked" element={<PodcastCards feedType={feedTypes} userId={userid} />} />}
-        </Routes>
-      </VideosSection>
+              {
+                isMyProfile && authUser && <CommonButton onClick={handleUpload}><CloudUpload sx={{ fontSize: 'large' }} /> Upload</CommonButton>
+              }
 
-    </Container>
+              {isMyProfile && authUser &&
+                <LogoutButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(`/`)
+                    logout()
+
+                  }}>
+                  <LogoutOutlined sx={{ fontSize: 'large' }} />Logout
+                </LogoutButton>}
+            </div>
+
+
+            {!isMyProfile && authUser && <div onClick={() => follow(user?._id)}>
+              {!isPending && !amISubscribing && <SubscribeButton>Subscribe</SubscribeButton>}
+              {!isPending && amISubscribing && <SubscribeButton>Subscribed <Check fontSize='small' style={{ fontWeight: "bolder" }} /></SubscribeButton>}
+              {isPending && <SubscribeButton>...</SubscribeButton>}
+            </div>}
+            {!authUser && <SubscribeButton onClick={handleSignIn}>Subscribe</SubscribeButton>}
+
+          </ProfileDetails>
+        </ProfileSection>
+        <Buttons>
+          <Link to={`/profile/${userid}/videos`}>
+            <Button active={feedTypes === 'videos'} onClick={() => setFeedTypes('videos')}>Videos</Button>
+          </Link>
+          <Link to={`/profile/${userid}/playlists`}>
+            <Button active={feedTypes === 'playlists'} onClick={() => setFeedTypes('playlists')}>Playlists</Button>
+          </Link>
+          {isMyProfile && <Link to={`/profile/${userid}/saved`}>
+            <Button active={feedTypes === 'saved'} onClick={() => setFeedTypes('saved')}>Saved</Button>
+          </Link>}
+          {isMyProfile && <Link to={`/profile/${userid}/liked`}>
+            <Button active={feedTypes === 'liked'} onClick={() => setFeedTypes('liked')}>Liked</Button>
+          </Link>}
+        </Buttons>
+
+        <VideosSection>
+          <Routes>
+            <Route path="/" element={<PodcastCards feedType={feedTypes} userId={userid} />} />
+            <Route path="videos" element={<PodcastCards feedType={feedTypes} userId={userid} />} />
+            <Route path="playlists" eelement={<PodcastCards feedType={feedTypes} userId={userid} />} />
+            {isMyProfile && <Route path="saved" element={<PodcastCards feedType={feedTypes} userId={userid} />} />}
+            {isMyProfile && <Route path="liked" element={<PodcastCards feedType={feedTypes} userId={userid} />} />}
+          </Routes>
+        </VideosSection>
+
+      </Container>}
+    </>
   );
 };
 

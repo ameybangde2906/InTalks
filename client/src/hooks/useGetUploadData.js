@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react'
 
 const useGetUploadData = (POST_ENDPOINTS, feedType, userId,query) => {
-    const { data: uploads, isLoading: isgettingData, refetch, isError } = useQuery({
+    const { data: uploads, isLoading: isgettingData, refetch, isError, isRefetching:isRefetchingData } = useQuery({
         queryKey: ["uploads"],
         queryFn: async () => {
             const res = await fetch(`${endPoint}${POST_ENDPOINTS}`);
@@ -20,7 +20,7 @@ const useGetUploadData = (POST_ENDPOINTS, feedType, userId,query) => {
             refetch();
     }, [feedType, refetch, userId,query])
 
-    return { uploads, isgettingData, refetch,isError }
+    return { uploads, isgettingData, refetch,isError, isRefetchingData }
 }
 
 export default useGetUploadData

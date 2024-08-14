@@ -1,33 +1,11 @@
 import React from 'react';
 import styled from "styled-components";
-import { IconButton } from '@mui/material';
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { endPoint } from '../../utils/Constants';
-import LoadingSpinner from '../../utils/LoadingSpinner';
 import { Link } from 'react-router-dom';
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { openSignin } from '../../redux/slices/setSignInSlice';
-import { useDispatch } from 'react-redux';
+import { MoreVert } from '@mui/icons-material';
+import { getInitials } from '../../utils/Initials';
 
-
-const PlayIcon = styled.div`
-padding:10px;
-border-radius: 50%;
-z-index:10;
-display: flex;
-align-items: center;
-background: #9000ff !important;
-color: white !important;
-backdrop-filter:blur(4px);
--webkit-backdrop-filter:blur(4px);
-position:absolute !important;
-top:45%;
-right: 10%;
-display: none;
-transition: all 0.4s ease-in-out;
-box-shadow: 0 0 16px 4px #9000ff50 !important;
-`
 
 const Card = styled.div`
 position:relative;
@@ -42,15 +20,6 @@ align-items:center;
 padding: 10px ;
 border-radius: 6px;
 box-shadow:0 0 18px 0 rgba(0,0,0,0.1);
-&:hover{
-    cursor:pointer;
-    transform:translateY(-8px);
-    transition:all 0.4s ease-in-out;
-    box-shadow: 0 0 18px 0 rgba(0,0,0,0.3);
-}
-&:hover ${PlayIcon}{
-    display: flex;
-}
 `;
 
 const Top = styled.div`
@@ -59,21 +28,6 @@ justify-content:center;
 align-items:center;
 height:150px;
 position:relative;
-`;
-
-const Favorite = styled(IconButton)`
-color:white;
-top:8px;
-right:6px;
-padding: 6px !important;
-border-radius:50%;
-z-index:10;
-display:flex;
-align-items:center;
-background:${({ theme }) => theme.text_secondary} !important;
-color:white !important;
-position: absolute !important;
-backdrop-filter:blur(4px);
 `;
 
 const CardImage = styled.img`
@@ -96,15 +50,16 @@ width:100%;
 flex-direction:column;
 justify-content:flex-start;
 gap:4px;
+color:${({ theme }) => theme.text_primary};
 `;
 
 const Title = styled.div`
 overflow:hidden;
 display:-webkit-box;
-max-width:100%;
 -webkit-line-clamp:2;
 -webkit-box-orient:vertical;
 height: 45px;
+width: 238px;
 text-overflow:ellipsis;
 text-transform: capitalize;
 color:${({ theme }) => theme.text_primary};
@@ -132,7 +87,7 @@ font-weight: 700;
 display: flex;
 align-items: center;
 justify-content: center;
-color:${({ theme }) => theme.primary};
+color:${({ theme }) => theme.bg};
 background-color: ${({ theme }) => theme.text_primary};
 `
 const ProfileImg = styled.img`
@@ -156,10 +111,10 @@ color:${({ theme }) => theme.text_secondary};
 width:max-content;
 `;
 
-const PodcastCard = ({ upload }) => {
-    const dispatch = useDispatch()
+const PodcastCard = ({ upload,}) => {
     const { data: authUser } = useQuery({ queryKey: ["authUser"] });
-    const isSaved = authUser?.savedPosts?.includes(upload._id)
+  
+
     const queryClient = useQueryClient();
     const { mutate, isPending } = useMutation({
         mutationFn: async () => {
@@ -188,26 +143,19 @@ const PodcastCard = ({ upload }) => {
         },
     })
 
-    const handleSignIn = () => {
-        dispatch(openSignin())
-    }
-
     const savePost = (e) => {
         e.preventDefault()
         mutate()
     }
 
-    const userName = upload?.user?.fullname
-    const words = userName?.split(' ');
-    const initials = words?.map(word => word[0].toUpperCase()).join('');
 
     return (
         <>
-            <Link to={`/podcast/${upload._id}`} >
-                <Card>
-                    <div>
+            <Card>
+                <div>
+                    <Link to={`/podcast/${upload._id}`} >
                         <Top>
-                            {authUser ?
+                            {/* {authUser ?
                                 <Favorite onClick={savePost}>
                                     {isPending && <LoadingSpinner />}
                                     {!isSaved ? <FavoriteIcon style={{
@@ -227,30 +175,34 @@ const PodcastCard = ({ upload }) => {
                                         height: "16px",
                                     }} />
                                 </Favorite>
-                            }
-                            <CardImage src={upload.thumbnail} />
+                            } */}
+                            <CardImage src={upload?.thumbnail} />
                         </Top>
-                        <CardInformation>
-                            <MainInfo>
-                                <Title>{upload.episodeName}</Title>
-                                <CreatorsInfo>
-                                    <Link to={`/profile/${upload?.user._id}`}>
-                                        <Creator>
-                                            {upload?.user?.profileImage !== '' && <ProfileImg src={upload?.user?.profileImage} />}
-                                            {upload?.user?.profileImage == '' && <NameDiv >{initials}</NameDiv> }
-                                            <CreatorName>{upload.user.fullname}</CreatorName>
-                                        </Creator>
-                                    </Link>
-                                    <Views>{upload.views} views</Views>
-                                </CreatorsInfo>
-                            </MainInfo>
-                        </CardInformation>
-                    </div>
-                    <PlayIcon>
-                        <PlayArrowIcon style={{ width: "28px", height: "28px" }} />
-                    </PlayIcon>
-                </Card>
-            </Link>
+                    </Link>
+                    <CardInformation>
+                        <MainInfo>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Link to={`/podcast/${upload._id}`}>
+                                    <Title>{upload?.episodeName}</Title>
+                                </Link>
+                                <MoreVert sx={{ fontSize: '20px', cursor: 'pointer' }} />
+                            </div>
+
+                            <CreatorsInfo>
+                                <Link to={`/profile/${upload?.user._id}`}>
+                                    <Creator>
+                                        {upload?.user?.profileImage !== '' && <ProfileImg src={upload?.user?.profileImage} />}
+                                        {upload?.user?.profileImage === '' && <NameDiv >{getInitials(upload?.user?.fullname)}</NameDiv>}
+                                        <CreatorName>{upload?.user?.fullname}</CreatorName>
+                                    </Creator>
+                                </Link>
+                                <Views>{upload?.views} views</Views>
+                            </CreatorsInfo>
+                        </MainInfo>
+                    </CardInformation>
+                </div>
+            </Card>
+
         </>
     )
 }

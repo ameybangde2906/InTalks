@@ -17,6 +17,7 @@ const VideoPlayer = ({ videoId }) => {
       key={videoSrc} // Force re-render when videoSrc changes
       controls
       muted
+      autoPlay
       onError={(e) => console.error('Error loading video:', e)}
     >
       <source src={videoSrc} type="video/mp4" />

@@ -9,6 +9,7 @@ import RelatedPodcast from './RelatedPodcast';
 import OwnerDetails from './OwnerDetails';
 import CommentSection from './CommentSection';
 import { formatDate } from '../../utils/formatDate'
+import PodcastDetailSkeleton from '../../components/skeletons/PodcastDetailSkeleton';
 
 const MainConatiner = styled.div`
 padding:2%;
@@ -22,6 +23,7 @@ flex-direction: row;
 const VideoContainer = styled.div`
 width: 70%;
 display: flex;
+padding: 10px;
 flex-direction: column;
 @media(max-width:1000px){
    width: 100%;
@@ -42,19 +44,20 @@ padding-left: 4%;
 `
 const VideoDescription = styled.div`
 margin: 0 10px;
+font-size: 13px;
+letter-spacing: 1px;
 `
 const Date = styled.div`
 margin: 0 10px;
 `
 const Views = styled.div`
 margin: 0 10px;
-
 `
 
 const PodcastDetails = () => {
   const { id: podcastId } = useParams();
 
-  const { data, isLoading, isError, error, refetch } = useQuery({
+  const { data, isLoading, isRefetching, isError, error, refetch } = useQuery({
     queryKey: ["uploads"],
     queryFn: async () => {
       const res = await fetch(`${endPoint}/api/upload/podcast/${podcastId}`);
@@ -63,7 +66,6 @@ const PodcastDetails = () => {
         throw new Error(errorData.error || "Something went wrong");
       }
       const data = await res.json();
-      console.log('Fetched data:', data);
       return data;
     },
   });
@@ -90,9 +92,13 @@ const PodcastDetails = () => {
       <VideoContainer>
         <VideoPlayer videoId={data?.audioVideo} />
 
-        <OwnerDetails data={data} loading={isLoading} />
+        <OwnerDetails data={data} loading={isLoading} refetching={isRefetching} />
 
-        <Description>
+        {(isLoading || isRefetching) &&
+          <PodcastDetailSkeleton />
+        }
+
+        {!isLoading && !isRefetching && data && <Description>
           <div className='flex mb-3 font-bold'>
             <Views>
               {data.views}
@@ -102,9 +108,9 @@ const PodcastDetails = () => {
           </div>
 
           <VideoDescription>
-            Video Description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod sunt cupiditate similique voluptatum eligendi ea? Quos, reiciendis. Temporibus sed, nisi dolorem non eveniet unde tenetur enim ex consequuntur cum quam libero sint ullam consectetur suscipit ipsa optio quasi iure illo. Sint dolorum unde placeat nulla dicta magni laudantium minima aperiam! Placeat impedit quia neque minus eaque facere ipsam enim a, tempore quae dolores quaerat, tempora id quod rem vero harum quasi perspiciatis iusto dicta eum inventore. Eius aliquid et delectus nisi impedit, ipsa eligendi suscipit omnis nam soluta deserunt ipsam sint, laboriosam iste id doloremque exercitationem sequi, perspiciatis iusto est.
+            {data.episodeDescription}
           </VideoDescription>
-        </Description>
+        </Description>}
 
         <CommentSection data={data} />
       </VideoContainer >

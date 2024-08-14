@@ -5,15 +5,15 @@ import { lightTheme, darkTheme } from "./utils/Themes";
 import Sidebar from "./components/common/Sidebar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/common/Navbar";
-import Dashboard from "./pages/Dashboard";
-import Favourite from "./pages/Favourite";
 import Profile from "./pages/profile/Profile";
-import UploadPodcast from "./pages/UploadPodcast";
 import PlaylistEpisodes from "./components/common/PlaylistEpisodes";
 import PodcastDetails from "./pages/podcastDetail/PodcastDetails"
 import SearchResult from "./components/common/SearchResult";
 import { useQuery } from "@tanstack/react-query";
 import { endPoint } from "./utils/Constants";
+import Favourite from "./pages/profile/Favourite";
+import UploadPodcast from "./pages/profile/UploadPodcast";
+import Dashboard from "./pages/dashboard_page/Dashboard";
 
 const Container = styled.div`
 display:flex;
@@ -30,12 +30,13 @@ flex:3;
 `;
 
 function App() {
-  const savedMode = JSON.parse(localStorage.getItem('mode')) || false;
-  const themeChange = savedMode === true ? lightTheme : darkTheme;
-  const [darkMode, setDarkMode] = useState(savedMode);
+  const savedMode = localStorage.getItem('mode')
+  const themeChange = savedMode === 'darkTheme' ? lightTheme : darkTheme;
+  const [theme, setTheme] = useState('lightTheme');
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const { data: authUser } = useQuery({
+
+  const { isRefetching, isLoading } = useQuery({
     queryKey: ['authUser'],
     queryFn: async () => {
         try {
@@ -52,7 +53,6 @@ function App() {
             if (!res.ok || data.error) {
                 throw new Error(data.error || "Something went wrong")
             }
-            console.log('authUser is here:', data)
             return data;
         } catch (error) {
             throw new Error(error)
@@ -68,6 +68,7 @@ function App() {
     }
 };
 
+
 useEffect(() => {
     // Check screen size on initial render
     handleResize();
@@ -81,10 +82,19 @@ useEffect(() => {
     };
 }, []);
 
+useEffect(() => {
+  // Check localStorage for saved theme preference on mount
+  const savedTheme = localStorage.getItem('mode');
+  if (savedTheme) {
+      setTheme(savedTheme);
+  }
+}, []);
+
 
   const toggleFn = () => {
-    setDarkMode(!darkMode);
-    localStorage.setItem('mode', JSON.stringify(darkMode))
+    const newTheme = theme === 'lightTheme' ? 'darkTheme': 'lightTheme';
+    setTheme(newTheme)
+    localStorage.setItem('mode', newTheme)
   }
 
   return (
@@ -93,10 +103,10 @@ useEffect(() => {
         <Container>
           <Sidebar menuOpen={menuOpen} setMenuOpen={setMenuOpen} toggleFn={toggleFn} savedMode={savedMode} />
           <Frame>
-            <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+            <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} isRefetching={isRefetching} isLoading={isLoading} />
             <Routes>
-              <Route path="/" element={<Dashboard />}></Route>
-              <Route path="/favourite" element={<Favourite />}></Route>
+              <Route path="/" element={<Dashboard/>}></Route>
+              <Route path="/favourite" element={<Favourite/>}></Route>
               <Route element={<UploadPodcast/>}></Route>
               <Route path="/profile/:userid/:feedType?/*" element={<Profile />}></Route>
               <Route path="/:type" element={<Dashboard />}></Route>
@@ -107,7 +117,6 @@ useEffect(() => {
           </Frame>
         </Container>
       </BrowserRouter>
-
     </ThemeProvider>
   );
 }

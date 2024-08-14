@@ -1,5 +1,5 @@
 import React from 'react'
-import PodcastCards from '../components/common/PodcastCards'
+import PodcastCards from '../../components/common/PodcastCards'
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 

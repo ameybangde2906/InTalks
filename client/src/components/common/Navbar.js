@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { IconButton } from '@mui/material'
 import { useQuery } from '@tanstack/react-query';
 import { MenuRounded } from '@mui/icons-material'
-import SignIn from '../../pages/sign-in/SignIn'
+import SignIn from '../../pages/Authentication/SignIn'
 import LogoImage from "../../images/mic.png"
-
+import { getInitials } from "../../utils/Initials"
 import { Link } from 'react-router-dom'
 import SearchBar from './SearchBar'
 
@@ -14,7 +14,7 @@ display: flex;
 align-items: center;
 cursor: pointer;
 font-weight: 800;
-font-size: 18px;
+font-size: 20px;
 color: ${({ theme }) => theme.primary};
 display: none;
 @media(max-width:1200px){
@@ -23,8 +23,9 @@ display: none;
 }
 `
 const Logo = styled.img`
-width: 30px;
-height: 30px;
+width: 33px;
+height: 33px;
+margin-right: 5px;
 `
 
 const NavBarDiv = styled.div`
@@ -60,7 +61,7 @@ font-weight: 700;
 display: flex;
 align-items: center;
 justify-content: center;
-color:${({ theme }) => theme.primary};
+color:${({ theme }) => theme.bg};
 background-color: ${({ theme }) => theme.text_primary};
 `
 const ProfileImg = styled.img`
@@ -69,21 +70,23 @@ height: 35px;
 border-radius: 50%;
 `
 const UserCircle = styled.div`
-margin: 0 4%;
+margin: 0 2%;
 `
 
-const SignInButton=styled.div`
-border:1px solid ${({theme})=>theme.primary};
+const SignInButton = styled.div`
 border-radius: 10px;
+
 `
 const Navbar = ({ menuOpen, setMenuOpen }) => {
 
-  const { data: authUser } = useQuery({ queryKey: ["authUser"] });
+    const { data: authUser } = useQuery({ queryKey: ["authUser"] });
+    const [show, setShow] = useState(false)
 
-    const userName = authUser?.fullname
-    const words = userName?.split(' ');
-    const initials = words?.map(word => word[0].toUpperCase()).join('');
+    useEffect(() => {
+        if (authUser) {
 
+        }
+    }, [authUser])
 
     return (
         <NavBarDiv>
@@ -93,13 +96,30 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             <Link to='/'>
                 <LogoDiv>
                     <Logo src={LogoImage} />
-                    PS
+                    IT
                 </LogoDiv>
             </Link>
 
-            <SearchBar></SearchBar>
+            <SearchBar />
 
-            <UserCircle> {authUser ? <Link to={`/profile/${authUser._id}`} >{ authUser?.profileImage !=='' && <ProfileImg src={authUser.profileImage}/> } { authUser?.profileImage ==='' && <NameDiv >{initials}</NameDiv>}</Link> : <SignInButton><SignIn></SignIn></SignInButton>}</UserCircle>
+          
+                {<UserCircle>
+                    {authUser ?
+                        <Link to={`/profile/${authUser._id}`} >
+                            {authUser?.profileImage !== null  &&
+                                <ProfileImg src={authUser?.profileImage} />
+                            }
+                            {(authUser?.profileImage === null) &&
+                                <NameDiv >{getInitials(authUser?.fullname)}</NameDiv>}
+                        </Link>
+                        :
+                        <SignInButton>
+                            <SignIn />
+                        </SignInButton>
+                    }
+                </UserCircle>}
+
+
         </NavBarDiv >
 
     )

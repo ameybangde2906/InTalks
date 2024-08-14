@@ -6,7 +6,10 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from "react-hot-toast";
-import { endPoint } from '../utils/Constants';
+import { endPoint } from '../../utils/Constants';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeUpload, openUpload } from '../../redux/slices/setUploadPodcast';
+import { useEffect } from 'react';
 
 const DialogContainer = styled.div`
 width:500px;
@@ -45,7 +48,7 @@ cursor:pointer;
 color:${({ theme }) => theme.text_secondary};
 &:hover{
     color: ${({ theme }) => theme.hover};
-    background-color: ${({ theme }) => theme.text_secondary}
+    background: ${({ theme }) => theme.button_text}
 }
 `
 
@@ -133,8 +136,8 @@ border-radius: 10px;
 `
 const NextButton = styled.button`
 border-radius: 10px;
-color: white;
-background-color: ${({ theme }) => theme.primary};
+color: ${({ theme }) => theme.text_primary};
+background: ${({ theme }) => theme.button_text};
 margin-top: 20px;
 border: none;
 width: 100%;
@@ -154,17 +157,17 @@ border-radius:10px;
 `
 const BackButton = styled.button`
 border-radius: 10px;
-color: ${({ theme }) => theme.bg};
-background-color: ${({ theme }) => theme.text_secondary};
+color: rgb(20, 133, 220);
+background-color: transparent;
+border: 1px solid rgb(20, 133, 220);
 margin-top: 20px;
-border: none;
 width: 100%;
 height: 45px;
 `
 const UploadButton = styled.button`
 border-radius: 10px;
-color: white;
-background-color: ${({ theme }) => theme.primary};
+color: ${({ theme }) => theme.text_primary};
+background: ${({ theme }) => theme.button_text};
 margin-top: 20px;
 border:none;
 width: 100%;
@@ -181,8 +184,10 @@ margin-top: 10px;
 `
 
 const UploadPodcast = () => {
+    const dispatch = useDispatch()
     const [next, setNext] = useState(false)
-    const [open, setOpen] = React.useState(false);
+    const value = useSelector(store => store.upload.openul);
+    const [open, setOpen] = useState(value);
     const [video, setVideo] = useState(false)
     const [playlist, setPlaylist] = useState(false)
 
@@ -212,11 +217,11 @@ const UploadPodcast = () => {
 
 
     const handleClickOpen = () => {
-        setOpen(true);
+        dispatch(openUpload())
     };
 
     const handleClose = () => {
-        setOpen(false);
+        dispatch(closeUpload())
         setNext(false);
         setVideo(false);
         setPlaylist(false)
@@ -436,6 +441,10 @@ const UploadPodcast = () => {
     const handleFormData = (e) => {
         setUploadData({ ...uploadData, [e.target.name]: e.target.value })
     }
+
+    useEffect(() => {
+        setOpen(value);
+    }, [value]);
 
     return (
         <React.Fragment >

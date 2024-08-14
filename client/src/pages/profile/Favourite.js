@@ -1,5 +1,5 @@
 import React from 'react'
-import PodcastCard from '../components/common/PodcastCard'
+import PodcastCard from '../../components/common/PodcastCard'
 import styled from "styled-components";
 
 const Container=styled.div`

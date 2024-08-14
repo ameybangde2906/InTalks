@@ -3,11 +3,11 @@ import React from 'react'
 import styled from 'styled-components'
 import LogoImage from "../../images/mic.png"
 import { Link } from 'react-router-dom'
-import UploadPodcast from '../../pages/UploadPodcast'
+import UploadPodcast from '../../pages/profile/UploadPodcast'
 import { useQuery } from '@tanstack/react-query'
 import { useDispatch } from 'react-redux'
 import { openSignin } from '../../redux/slices/setSignInSlice'
-
+import Footer from './Footer'
 
 const MenuContainer = styled.div`
 flex:0.5;
@@ -43,11 +43,12 @@ justify-content:center;
 gap:0px;
 font-weight:bold;
 font-size:20px;
-margin:10px 0px;
+padding:10px 10px;
 `;
 
 const Image = styled.img`
-height:35px;
+height:37px;
+margin: 5px;
 `;
 
 const Close = styled.div`
@@ -70,7 +71,7 @@ cursor:pointer;
 color:${({ theme }) => theme.text_secondary};
 &:hover{
     color: ${({ theme }) => theme.hover};
-    background-color: ${({ theme }) => theme.text_secondary}
+    background: ${({ theme }) => theme.button_text}
 }
 `;
 
@@ -105,14 +106,13 @@ cursor:pointer;
 color:${({ theme }) => theme.text_secondary};
 &:hover{
     color: ${({ theme }) => theme.hover};
-    background-color: ${({ theme }) => theme.text_secondary}
+    background: ${({ theme }) => theme.button_text}
 }
 `
 
 const Sidebar = ({ menuOpen, setMenuOpen, toggleFn, savedMode }) => {
     const dispatch = useDispatch()
     const { data: authUser } = useQuery({ queryKey: ["authUser"] })
-
 
     const handleSignIn = () => {
         dispatch(openSignin())
@@ -126,7 +126,7 @@ const Sidebar = ({ menuOpen, setMenuOpen, toggleFn, savedMode }) => {
                 <Link to='/' onClick={() => setMenuOpen(false)}>
                     <Logo>
                         <Image src={LogoImage} />
-                        PODSTREAM
+                        InTalks
                     </Logo>
                 </Link>
 
@@ -146,13 +146,13 @@ const Sidebar = ({ menuOpen, setMenuOpen, toggleFn, savedMode }) => {
                 <Link to='/favorites' >
                     <Elements>
                         <FavoriteRounded />
-                        <NavText>Favorite</NavText>
+                        <NavText>Favorites</NavText>
                     </Elements>
                 </Link>
                 :
                 <Elements onClick={handleSignIn}>
                     <FavoriteRounded />
-                    <NavText>Favorite</NavText>
+                    <NavText>Favorites</NavText>
                 </Elements>
             }
 
@@ -223,7 +223,6 @@ const Sidebar = ({ menuOpen, setMenuOpen, toggleFn, savedMode }) => {
                 <NavText>{savedMode ? 'Dark Mode' : 'Light Mode'}</NavText>
             </Elements>
 
-
             {authUser ?
                 <div>
                     <UploadPodcast />
@@ -233,6 +232,7 @@ const Sidebar = ({ menuOpen, setMenuOpen, toggleFn, savedMode }) => {
                     <CloudUpload /> <NavText>Upload</NavText>
                 </Elements>
             }
+             <Footer/>
         </MenuContainer>
     )
 }

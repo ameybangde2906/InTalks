@@ -37,7 +37,8 @@ outline: none;
 `
 const SearchButton = styled.button`
 height: 100%;
-color: black;
+color:${({ theme }) => theme.primary} !important;
+
 `
 const SearchResult = styled.div`
 position: absolute;
@@ -126,11 +127,9 @@ const SearchBar = () => {
                     <SearchInput onChange={(e) => setQuery(e.target.value)} value={query} placeholder=' Search podcast here...'></SearchInput>
 
                     <div style={{ width: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
-
                         <SearchButton onClick={() => searchResult()}>
-                            <SearchRounded style={{ color: "be1adb" }} />
+                            <SearchRounded/>
                         </SearchButton>
-
                     </div>
                 </SearchBarContainer>
                 {data && <SearchResult>
@@ -138,7 +137,7 @@ const SearchBar = () => {
                         <SearchRounded className='mr-3' />
                         <SearchList onClick={() => handleNavigation(podcast?._id)}>{podcast?.episodeName || podcast?.user?.fullname}</SearchList>
                     </ul>))}
-                    {data.length === 0 && <li style={{listStyleType:'none'}}>No podcasts found...</li>}
+                    {data.length === 0 && <li style={{ listStyleType: 'none' }}>No podcasts found...</li>}
                 </SearchResult>}
             </MainContainer>
 

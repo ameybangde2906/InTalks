@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { endPoint } from '../../utils/Constants';
+import { getInitials } from '../../utils/Initials';
+import CardSkeleton from '../../components/skeletons/CardSkeleton';
 
 const PlayIcon = styled.div`
 padding:10px;
@@ -28,12 +30,12 @@ position:relative;
 text-decoration:none;
 background-color:${({ theme }) => theme.card};
 max-width:280px;
-height:300px;
+height:280px;
 display:flex;
 flex-direction:column;
 justify-content:flex-start;
 align-items:center;
-padding: 16px ;
+padding: 10px ;
 border-radius: 6px;
 box-shadow:0 0 18px 0 rgba(0,0,0,0.1);
 &:hover{
@@ -57,8 +59,8 @@ position:relative;
 
 const CardImage = styled.img`
 object-fit: fill;
-width:220px;
-height:140px;
+width:260px;
+height:150px;
 border-radius:6px;
 box-shadow: 0 4px 30px rgba(0,0,0, 0.3);
 &:hover {
@@ -99,6 +101,23 @@ align-items: center;
 gap: 8px;
 margin-top: 6px;
 `;
+const NameDiv = styled.div`
+width: 30px;
+height: 30px;
+border-radius: 50%;
+font-size: 14px;
+font-weight: 700;
+display: flex;
+align-items: center;
+justify-content: center;
+color:${({ theme }) => theme.bg};
+background-color: ${({ theme }) => theme.text_primary};
+`
+const ProfileImg = styled.img`
+width: 30px;
+height: 30px;
+border-radius: 50%;
+`
 
 const Creator = styled.div`
 display: flex;
@@ -122,7 +141,7 @@ width:max-content;
 
 const RelatedPodcast = ({ podcastId }) => {
 
-  const { data: upload } = useQuery({
+  const { data: upload, isLoading, isRefetching } = useQuery({
     queryKey: ["related"],
     queryFn: async () => {
       const res = await fetch(`${endPoint}/api/upload/related/${podcastId}`);
@@ -133,36 +152,48 @@ const RelatedPodcast = ({ podcastId }) => {
       return res.json();
     },
   });
-  console.log()
+
+  const skeletonCount = upload ? upload.length : 0;
+
   return (
     <>
       {upload?.length > 0 && <div>
         <h3>You may also like : </h3>
-        {upload.map((podcast) => (<Link to={`/podcast/${podcast?._id}`} >
-          <Card feedType={podcast?.episodeCategory}>
-            <div>
-              <Top>
-                <CardImage src={podcast?.thumbnail} />
-              </Top>
-              <CardInformation>
-                <MainInfo>
-                  <Title>{podcast?.episodeName}</Title>
-                  <CreatorsInfo>
-                    <Link to={`/profile/${podcast?.user?._id}`}>
-                      <Creator>
-                        <CreatorName>{podcast?.user?.fullname}</CreatorName>
-                      </Creator>
-                    </Link>
+        {(isLoading || isRefetching) &&
+          [...Array(skeletonCount)].map((_, index) => (
+            <CardSkeleton key={index} />
+          ))
+        }
+        
+        {!isLoading && !isRefetching && <div>
+          {upload.map((podcast) => (<Link to={`/podcast/${podcast?._id}`} >
+            <Card feedType={podcast?.episodeCategory}>
+              <div>
+                <Top>
+                  <CardImage src={podcast?.thumbnail} />
+                </Top>
+                <CardInformation>
+                  <MainInfo>
+                    <Title>{podcast?.episodeName}</Title>
+                    <CreatorsInfo>
+                      <Link to={`/profile/${podcast?.user?._id}`}>
+                        <Creator>
+                          {podcast?.user?.profileImage !== '' && <ProfileImg src={podcast?.user?.profileImage} />}
+                          {podcast?.user?.profileImage == '' && <NameDiv >{getInitials(podcast?.user?.fullname)}</NameDiv>}
+                          <CreatorName>{podcast?.user?.fullname}</CreatorName>
+                        </Creator>
+                      </Link>
 
-                    {podcast?.views > 0 ?
-                      <Views>{podcast?.views} views</Views> :
-                      <Views>0 views</Views>}
-                  </CreatorsInfo>
-                </MainInfo>
-              </CardInformation>
-            </div>
-          </Card>
-        </Link>))}
+                      {podcast?.views > 0 ?
+                        <Views>{podcast?.views} views</Views> :
+                        <Views>0 views</Views>}
+                    </CreatorsInfo>
+                  </MainInfo>
+                </CardInformation>
+              </div>
+            </Card>
+          </Link>))}
+        </div>}
       </div>}
     </>
   )

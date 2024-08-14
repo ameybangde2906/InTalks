@@ -18,7 +18,7 @@ export const signUp = async (req, res) => {
 
         const existingEmail = await User.findOne({ email });
         if (existingEmail) {
-            return res.status(400).json({ error: "Email is already taken" })
+            return res.status(400).json({ error: "Email is already" })
         }
 
         if (password.length < 6) {
@@ -109,3 +109,24 @@ export const getMe = async (req, res) => {
         res.status(500).json({ error: "Internal server error" })
     }
 }
+
+// export const generateOTP = async (req, res) => {
+//     try {
+//         const { email } = req.body;
+//         const user= await User.findById(req.user._id)
+//         if(!user){
+//             res.status(200).json({error:"User email does not found"})
+//         }
+
+//         if(user){
+//             const verifyOTP={
+//                 to:email,
+//                 subject: "Account verification OTP",
+//                 html:``
+//             }
+//         }
+        
+//     } catch (error) {
+
+//     }
+// }
