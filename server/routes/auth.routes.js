@@ -10,11 +10,11 @@ router.get("/me", protectRoute, getMe)
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: 'http://localhost:3000' }), 
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: 'https://intalks.onrender.com' }), 
 (req, res) => {
     // On success, generate token and set cookie
     generateTokenAndSetCookie(req.user._id, res);
-    res.redirect('http://localhost:3000'); // Redirect to homepage or dashboard
+    res.redirect('https://intalks.onrender.com'); // Redirect to homepage or dashboard
 });
 
 
