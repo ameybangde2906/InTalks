@@ -311,7 +311,7 @@ const SignIn = () => {
     };
 
     const loginWithGoogle = () => {
-        window.open("http://localhost:5000/api/auth/google/callback", "_self")
+        window.open("https://intalks.onrender.com/api/auth/google/callback", "_self")
     }
 
     const handleForgetPassword=()=>{
