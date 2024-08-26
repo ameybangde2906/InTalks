@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { IconButton } from '@mui/material'
 import { useQuery } from '@tanstack/react-query';
@@ -14,7 +14,7 @@ display: flex;
 align-items: center;
 cursor: pointer;
 font-weight: 800;
-font-size: 20px;
+font-size: 18px;
 color: ${({ theme }) => theme.primary};
 display: none;
 @media(max-width:1200px){
@@ -23,14 +23,14 @@ display: none;
 }
 `
 const Logo = styled.img`
-width: 33px;
-height: 33px;
+width: 30px;
+height: 30px;
 margin-right: 5px;
 `
 
 const NavBarDiv = styled.div`
 display:flex;
-justify-content:space-between;
+justify-content: space-between;
 padding:16px 20px;
 align-items:center;
 background-color: ${({ theme }) => theme.bgLight};
@@ -40,6 +40,7 @@ box-shadow: 0 4px 30px rgba(0,0,0,0.1);
 backdrop-filter:blur(5.7px);
 -webkit-backdrop-filter:blur(5.7px);
 z-index: 100;
+width: 100%;
 @media (max-width:768px){
     padding:16px;
 }
@@ -80,7 +81,6 @@ border-radius: 10px;
 const Navbar = ({ menuOpen, setMenuOpen }) => {
 
     const { data: authUser } = useQuery({ queryKey: ["authUser"] });
-    const [show, setShow] = useState(false)
 
     useEffect(() => {
         if (authUser) {
@@ -101,7 +101,6 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             </Link>
 
             <SearchBar />
-
           
                 {<UserCircle>
                     {authUser ?

@@ -42,13 +42,13 @@ align-items:center;
 justify-content:center;
 gap:0px;
 font-weight:bold;
-font-size:20px;
-padding:10px 10px;
+font-size:18px;
+padding:5px 10px;
 `;
 
 const Image = styled.img`
-height:37px;
-margin: 5px;
+height:30px;
+margin: 7px;
 `;
 
 const Close = styled.div`
@@ -61,6 +61,7 @@ cursor: pointer;
 
 const Elements = styled.div`
 padding:2px 26px;
+font-size: 14px;
 font-weight: 500;
 display:flex;
 flex-direction:row;
@@ -76,18 +77,19 @@ color:${({ theme }) => theme.text_secondary};
 `;
 
 const NavText = styled.div`
-padding:12px 0px;
-`;
+padding: 11px 0px;
+`
 
 const HR = styled.div`
 width:100%;
 height:1px;
 background-color: ${({ theme }) => theme.text_secondary + 50};
-margin:5px 0px;
+margin:3px 0px;
 `;
 
 const Explore = styled.div`
-padding:10px 0 10px 26px;
+padding:8px 0 8px 26px;
+font-size: 15px;
 font-weight: 500;
 display:flex;
 flex-direction:column;
@@ -100,7 +102,7 @@ display:flex;
 flex-direction:row;
 justify-content:flex-start;
 align-items:center;
-font-size: 14px;
+font-size: 13px;
 gap:12px;
 cursor:pointer;
 color:${({ theme }) => theme.text_secondary};
@@ -137,7 +139,7 @@ const Sidebar = ({ menuOpen, setMenuOpen, toggleFn, savedMode }) => {
 
             <Link to='/' >
                 <Elements>
-                    <HomeRounded />
+                    <HomeRounded fontSize='medium' />
                     <NavText>Home</NavText>
                 </Elements>
             </Link>
@@ -145,13 +147,13 @@ const Sidebar = ({ menuOpen, setMenuOpen, toggleFn, savedMode }) => {
             {authUser ?
                 <Link to='/favorites' >
                     <Elements>
-                        <FavoriteRounded />
+                        <FavoriteRounded fontSize='medium' />
                         <NavText>Favorites</NavText>
                     </Elements>
                 </Link>
                 :
                 <Elements onClick={handleSignIn}>
-                    <FavoriteRounded />
+                    <FavoriteRounded fontSize='medium'/>
                     <NavText>Favorites</NavText>
                 </Elements>
             }
@@ -163,55 +165,55 @@ const Sidebar = ({ menuOpen, setMenuOpen, toggleFn, savedMode }) => {
 
             <Link to='/trending'>
                 <ExploreDiv>
-                    <TrendingUp />
+                    <TrendingUp fontSize='small'/>
                     <NavText>Trending</NavText>
                 </ExploreDiv>
             </Link>
 
             <Link to='/music'>
                 <ExploreDiv>
-                    <MusicNote />
+                    <MusicNote fontSize='small'/>
                     <NavText>Music</NavText>
                 </ExploreDiv>
             </Link>
 
             <Link to='/movies'>
                 <ExploreDiv>
-                    <MovieSharp />
+                    <MovieSharp fontSize='small'/>
                     <NavText>Movies</NavText>
                 </ExploreDiv>
             </Link>
             <Link to='/comedy'>
                 <ExploreDiv>
-                    <TheaterComedy/>
+                    <TheaterComedy fontSize='small'/>
                     <NavText>Comedy</NavText>
                 </ExploreDiv>
             </Link>
 
             <Link to='/business'>
                 <ExploreDiv>
-                    <Business/>
+                    <Business fontSize='small'/>
                     <NavText>Business</NavText>
                 </ExploreDiv>
             </Link>
 
             <Link to='/gaming'>
                 <ExploreDiv>
-                    <GamepadSharp />
+                    <GamepadSharp fontSize='small'/>
                     <NavText>Gaming</NavText>
                 </ExploreDiv>
             </Link>
 
             <Link to='/sports'>
                 <ExploreDiv>
-                    <SportsBaseball />
+                    <SportsBaseball fontSize='small'/>
                     <NavText>Sports</NavText>
                 </ExploreDiv>
             </Link>
 
             <Link to='/fashion'>
                 <ExploreDiv>
-                    <ShoppingCart />
+                    <ShoppingCart fontSize='small'/>
                     <NavText>Fashion</NavText>
                 </ExploreDiv>
             </Link>
@@ -219,7 +221,7 @@ const Sidebar = ({ menuOpen, setMenuOpen, toggleFn, savedMode }) => {
             <HR />
 
             <Elements onClick={() => toggleFn()}>
-                {savedMode ? <DarkModeRounded /> : <LightModeRounded />}
+                {savedMode ? <DarkModeRounded fontSize='medium'/> : <LightModeRounded fontSize='medium' />}
                 <NavText>{savedMode ? 'Dark Mode' : 'Light Mode'}</NavText>
             </Elements>
 
@@ -229,7 +231,7 @@ const Sidebar = ({ menuOpen, setMenuOpen, toggleFn, savedMode }) => {
                 </div>
                 :
                 <Elements onClick={handleSignIn}>
-                    <CloudUpload /> <NavText>Upload</NavText>
+                    <CloudUpload fontSize='medium'/> <NavText>Upload</NavText>
                 </Elements>
             }
              <Footer/>

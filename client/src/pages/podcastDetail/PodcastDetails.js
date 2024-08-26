@@ -39,6 +39,8 @@ color: ${({ theme }) => theme.text_secondary};
 padding: 15px;
 `
 const RelatedVideos = styled.div`
+display: flex;
+justify-content: center;
 color: ${({ theme }) => theme.text_secondary};
 padding-left: 4%;
 `

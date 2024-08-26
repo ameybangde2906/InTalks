@@ -26,6 +26,12 @@ border-radius: 10px;
 width: 100%;
 font-weight: 700;
 padding: 4px 10px;
+@media (max-width:500px) {
+    padding: 2px 4px;
+    width: 80%;
+    font-size: 11px;
+    font-weight: 500;
+}
 `
 
 const Title = styled.div`
@@ -100,17 +106,6 @@ const Input = styled.input`
   }
 `;
 
-const ForgetPassword = styled.div`
-  color: ${({ theme }) => theme.text_secondary};
-  width: fit-content;
-  font-size: 14px;
-  cursor: pointer;
-  margin-top: 10px;
-  &:hover {
-    color: ${({ theme }) => theme.primary};
-    font-weight:700 ;
-  }
-`;
 
 const SubmitButton = styled.button`
   width: 350px;

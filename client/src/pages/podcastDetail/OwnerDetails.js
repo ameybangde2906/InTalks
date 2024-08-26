@@ -58,9 +58,9 @@ font-size: 13px;
 `
 const FollowButton = styled.button`
 width:max-content;
-font-weight: 700;
+font-weight: 500;
 font-size:14px ;
-padding: 8px;
+padding:5px 10px;
 background: ${({ theme }) => theme.button_text};
 color: ${({ theme }) => theme.bg};
 border-radius: 20px;
@@ -70,15 +70,15 @@ justify-content: space-around;
 gap: 3px;
 @media (max-width: 768px) {
     font-size: 12px;
-    padding: 5px;
+    padding:5px 8px;
 }
 `
 
 const LikeButton = styled.button`
 min-width: max-content;
-font-weight: 700;
+font-weight: 500;
 font-size:14px ;
-padding: 8px;
+padding: 4px 8px;
 background: ${({ theme }) => theme.button_text};
 color: ${({ theme }) => theme.bg};
 border-radius: 20px;
@@ -87,21 +87,21 @@ align-items: center;
 justify-content: space-around;
 gap: 6px;
 @media (max-width: 850px) {
-padding: 5px;
+padding:3px 5px;
+font-size: 12px;
 }
 `
 const LikeText=styled.div`
-@media (max-width: 768px) {
+@media (max-width: 650px) {
     display: none;
 }
 `
 
 const SaveButton = styled.button`
-height: 40px;
-font-weight: 700;
+height: 31px;
+font-weight: 500;
 font-size:14px;
-padding: 8px;
-margin-left: 15px;
+padding: 3px 8px;
 background: ${({ theme }) => theme.button_text};
 color: ${({ theme }) => theme.bg};
 border-radius: 20px;
@@ -111,8 +111,19 @@ justify-content: space-around;
 gap: 6px;
 
 @media (max-width: 850px) {
-height: 35px;
+height: 30px;
+padding: 0px 4px;
+font-size: 12px;
 }
+`
+const LikeDiv = styled.div`
+margin-left: 25%;
+@media(max-width:650px) {
+    margin-left: 5%;
+}
+`
+const SaveDiv = styled.div`
+    margin-left: 2%;
 `
 
 const OwnerDetails = ({ data, loading, refetching }) => {
@@ -212,7 +223,7 @@ const OwnerDetails = ({ data, loading, refetching }) => {
 
                 <PodcastName>{data.episodeName}</PodcastName>
                 <OwnerInfo>
-                    <div className='flex justify-center items-center'>
+                    <div className='flex justify-between items-center'>
                         <div className='flex'>
                             <Link to={`/profile/${data?.user?._id}`} >
                                 <ProfileImg>
@@ -241,18 +252,18 @@ const OwnerDetails = ({ data, loading, refetching }) => {
 
 
 
-                    {authUser ? <div className='ml-[25%]' onClick={handleLikePost}>
+                    {authUser ? <LikeDiv  onClick={handleLikePost}>
                         {!isLiked && <LikeButton >
                             <ThumbUpAltOutlined sx={{ width: '18px' }} />{data?.likes?.length} <LikeText>Like</LikeText>
                         </LikeButton>}
                         {isLiked && <LikeButton >
                             <ThumbUp sx={{ width: '18px' }} />{data?.likes?.length} <LikeText>Liked</LikeText>
                         </LikeButton>}
-                    </div> : <div className='ml-[25%]'><LikeButton onClick={handleSignIn}>
+                    </LikeDiv> : <LikeDiv ><LikeButton onClick={handleSignIn}>
                         <ThumbUpAltOutlined sx={{ width: '18px' }} />{data?.likes?.length} <LikeText>Like</LikeText>
-                    </LikeButton></div>}
+                    </LikeButton></LikeDiv>}
 
-                    {authUser ? <div  onClick={savePost}>
+                    {authUser ? <SaveDiv  onClick={savePost}>
 
                         {!isSaved && <SaveButton onClick={savePost} >
                             <FavoriteBorder sx={{ width: '18px' }} /> <LikeText>Save</LikeText>
@@ -260,10 +271,10 @@ const OwnerDetails = ({ data, loading, refetching }) => {
                         {isSaved && <SaveButton onClick={savePost} >
                             <Favorite sx={{ width: '18px' }} /> <LikeText>Saved</LikeText>
                         </SaveButton>}
-                    </div> : <div>
+                    </SaveDiv> : <SaveDiv>
                         <SaveButton onClick={handleSignIn}>
                             <FavoriteBorder sx={{ width: '18px' }} /> <LikeText>Save</LikeText>
-                        </SaveButton></div>}
+                        </SaveButton></SaveDiv>}
                 </OwnerInfo>
 
             </ Details>}

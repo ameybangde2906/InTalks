@@ -12,11 +12,14 @@ const MainContainer = styled.div`
 position: relative;
 width: 45%;
 margin-right: 6%;
+@media (max-width:500px) {
+    width: 60%;
+}
 `
 const SearchBarContainer = styled.div`
 border-radius: 15px;
 width: 100%;
-height: 37px;
+height: 30px;
 display: flex;
 justify-content: center;
 align-items: center;
@@ -54,6 +57,11 @@ justify-content: flex-start;
 color:${({ theme }) => theme.text_secondary} !important;
 background-color:${({ theme }) => theme.bg} !important;
 border:1px solid ${({ theme }) => theme.text_secondary} !important ;
+@media (max-width:500px){
+    width: 280px;
+    font-size: 12px;
+    min-height: 35px;
+}
 `
 const SearchList = styled.li`
 cursor: pointer;
@@ -128,13 +136,13 @@ const SearchBar = () => {
 
                     <div style={{ width: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
                         <SearchButton onClick={() => searchResult()}>
-                            <SearchRounded/>
+                            <SearchRounded fontSize='medium'/>
                         </SearchButton>
                     </div>
                 </SearchBarContainer>
                 {data && <SearchResult>
                     {data?.map((podcast) => (<ul className='flex'>
-                        <SearchRounded className='mr-3' />
+                        <SearchRounded className='mr-3' fontSize='small' />
                         <SearchList onClick={() => handleNavigation(podcast?._id)}>{podcast?.episodeName || podcast?.user?.fullname}</SearchList>
                     </ul>))}
                     {data.length === 0 && <li style={{ listStyleType: 'none' }}>No podcasts found...</li>}
