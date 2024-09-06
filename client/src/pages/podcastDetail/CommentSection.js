@@ -15,7 +15,7 @@ padding: 30px 0 70px 20px ;
 color: ${({ theme }) => theme.text_secondary};
 `
 const Title = styled.div`
-font-size: 20px;
+font-size: 16px;
 font-weight: 500;
 `
 const Hr = styled.hr`
@@ -39,29 +39,29 @@ font-size: 14px;
 font-weight: 700;
 color:${({ theme }) => theme.bg};
 background-color: ${({ theme }) => theme.text_primary};
-width: 30px;
-height: 30px;
+width: 28px;
+height: 28px;
 display: flex;
 justify-content: center;
 align-items: center;
 `
 const Img = styled.img`
-width: 30px;
-height: 30px;
+width: 28px;
+height: 28px;
 border-radius: 50%;
 `
 const Input = styled.input`
 &:focus{outline:none}
-border:1px solid ${({ theme }) => theme.text_secondary};
+border:1px solid gray;
 border-radius: 10px;
 width: 60%;
 color:  ${({ theme }) => theme.text_secondary};
-font-size: 14px;
-padding: 3px 3px 3px 8px;
+font-size: 13px;
+padding: 1px 3px 1px 8px;
 `
 const Button = styled.button`
 width: 100px;
-padding: 7px;
+padding: 5px;
 background: ${({ theme }) => theme.button_text};
 color: ${({ theme }) => theme.text_primary};
 border-radius: 12px;

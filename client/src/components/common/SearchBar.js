@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import styled from 'styled-components'
 import { endPoint } from '../../utils/Constants'
-import { SearchRounded } from '@mui/icons-material'
+import { Close, SearchOutlined, SearchRounded } from '@mui/icons-material'
 import { debounce } from 'lodash';
 import { useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -10,10 +10,14 @@ import { useNavigate } from 'react-router-dom';
 
 const MainContainer = styled.div`
 position: relative;
-width: 45%;
-margin-right: 6%;
-@media (max-width:500px) {
+width: 50%;
+@media (max-width:1000px) {
+    width: 75%;
+}
+
+@media (max-width:600px) {
     width: 60%;
+    display: none;
 }
 `
 const SearchBarContainer = styled.div`
@@ -25,23 +29,22 @@ justify-content: center;
 align-items: center;
 color:${({ theme }) => theme.text_secondary} !important;
 background-color:${({ theme }) => theme.bg} !important;
-border:1px solid ${({ theme }) => theme.text_secondary} !important ;
+border:1px solid gray ;
 `
 const SearchInput = styled.input`
 padding-left: 10px;
 border-top-left-radius: 15px;
 border-bottom-left-radius: 15px;
 width: 91%;
-height: 95%;
+height: 100%;
 border-right: 1px solid ${({ theme }) => theme.text_secondary} !important;
 background-color:transparent;
-font-size: 14px;
+font-size: 13px;
 outline: none;
 `
 const SearchButton = styled.button`
 height: 100%;
 color:${({ theme }) => theme.primary} !important;
-
 `
 const SearchResult = styled.div`
 position: absolute;
@@ -57,11 +60,6 @@ justify-content: flex-start;
 color:${({ theme }) => theme.text_secondary} !important;
 background-color:${({ theme }) => theme.bg} !important;
 border:1px solid ${({ theme }) => theme.text_secondary} !important ;
-@media (max-width:500px){
-    width: 280px;
-    font-size: 12px;
-    min-height: 35px;
-}
 `
 const SearchList = styled.li`
 cursor: pointer;
@@ -80,11 +78,61 @@ text-transform: capitalize;
 &:hover{
     color:${({ theme }) => theme.primary} !important;
 }
+`
+const Search = styled.div`
+display: none;
+cursor: pointer;
+@media (max-width:600px){
+    display: block;
+}
+`
 
+const SearchNav = styled.div`
+width: 100%;
+height: 70px;
+position: absolute;
+background-color: ${({ theme }) => theme.bg} !important;
+z-index: 100;
+top: 0;
+right: 0;
+display: none;
+@media (max-width:600px){
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+`
+const SearchInputTwo = styled.input`
+padding-left: 10px;
+width: 94%;
+height: 30px;
+font-size: 12px;
+outline: none;
+background-color: transparent;
+`
+const SearchInputBox = styled.div`
+width: 92%;
+background-color: ${({ theme }) => theme.bg};
+border: 1px solid gray;
+`
+const SearchResultTwo = styled.div`
+position: absolute;
+top: 70px;
+margin-top: 1px;
+font-size: 12px;
+width: 100%;
+min-height: 40px;
+padding: 10px;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+color:${({ theme }) => theme.text_secondary} !important;
+background-color:${({ theme }) => theme.bg} !important;
 `
 
 const SearchBar = () => {
     const [query, setQuery] = useState('');
+    const [smallSearch, setSmallSearch] = useState(false)
 
     const fetchSearchResults = async () => {
         const response = await fetch(`${endPoint}/api/upload/search/${query}`)
@@ -128,6 +176,10 @@ const SearchBar = () => {
         enabled: !!debouncedQuery,
     });
 
+    const toggleSmallSearch = () => {
+        setSmallSearch(true)
+    }
+
     return (
         <>
             <MainContainer >
@@ -136,9 +188,11 @@ const SearchBar = () => {
 
                     <div style={{ width: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
                         <SearchButton onClick={() => searchResult()}>
-                            <SearchRounded fontSize='medium'/>
+                            <SearchRounded fontSize='medium' />
                         </SearchButton>
                     </div>
+
+
                 </SearchBarContainer>
                 {data && <SearchResult>
                     {data?.map((podcast) => (<ul className='flex'>
@@ -149,6 +203,26 @@ const SearchBar = () => {
                 </SearchResult>}
             </MainContainer>
 
+
+            <Search onClick={toggleSmallSearch} >
+                <SearchOutlined fontSize='small'/>
+            </Search>
+            {smallSearch && <SearchNav>
+                <SearchInputBox>
+                    <SearchInputTwo onChange={(e) => setQuery(e.target.value)} value={query} placeholder=' Search podcast here...'></SearchInputTwo>
+                    <SearchButton onClick={() => searchResult()}>
+                        <SearchOutlined  sx={{ fontSize: 'large'}}/>
+                    </SearchButton>
+                </SearchInputBox>
+                <SearchButton onClick={() => setSmallSearch(false)} style={{cursor:'pointer'}}><Close sx={{ fontSize: 'large', marginLeft: '10px' }} /></SearchButton>
+                {data && <SearchResultTwo>
+                    {data?.map((podcast) => (<ul className='flex'>
+                        <SearchRounded className='mr-3' fontSize='small' />
+                        <SearchList onClick={() => handleNavigation(podcast?._id)}>{podcast?.episodeName || podcast?.user?.fullname}</SearchList>
+                    </ul>))}
+                    {data.length === 0 && <li style={{ listStyleType: 'none' }}>No podcasts found...</li>}
+                </SearchResultTwo>}
+            </SearchNav>}
         </>
     )
 }

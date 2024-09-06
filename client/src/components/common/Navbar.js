@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { IconButton } from '@mui/material'
 import { useQuery } from '@tanstack/react-query';
-import { MenuRounded } from '@mui/icons-material'
+import { MenuRounded, SearchOutlined } from '@mui/icons-material'
 import SignIn from '../../pages/Authentication/SignIn'
 import LogoImage from "../../images/mic.png"
 import { getInitials } from "../../utils/Initials"
@@ -71,13 +71,22 @@ height: 35px;
 border-radius: 50%;
 `
 const UserCircle = styled.div`
-margin: 0 2%;
+display: flex;
 `
 
 const SignInButton = styled.div`
 border-radius: 10px;
-
 `
+
+const SearchContainer = styled.div`
+width: 100%;
+display: flex;
+justify-content: center;
+@media (max-width:600px){
+    justify-content: right;
+}
+`
+
 const Navbar = ({ menuOpen, setMenuOpen }) => {
 
     const { data: authUser } = useQuery({ queryKey: ["authUser"] });
@@ -100,27 +109,29 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
                 </LogoDiv>
             </Link>
 
-            <SearchBar />
-          
-                {<UserCircle>
-                    {authUser ?
-                        <Link to={`/profile/${authUser._id}`} >
-                            {authUser?.profileImage !== null  &&
-                                <ProfileImg src={authUser?.profileImage} />
-                            }
-                            {(authUser?.profileImage === null) &&
-                                <NameDiv >{getInitials(authUser?.fullname)}</NameDiv>}
-                        </Link>
-                        :
-                        <SignInButton>
-                            <SignIn />
-                        </SignInButton>
-                    }
-                </UserCircle>}
+            <SearchContainer>
+                <SearchBar />
+            </SearchContainer>
 
+
+            {<UserCircle>
+
+                {authUser ?
+                    <Link to={`/profile/${authUser._id}`} >
+                        {authUser?.profileImage !== null &&
+                            <ProfileImg src={authUser?.profileImage} />
+                        }
+                        {(authUser?.profileImage === null) &&
+                            <NameDiv >{getInitials(authUser?.fullname)}</NameDiv>}
+                    </Link>
+                    :
+                    <SignInButton>
+                        <SignIn />
+                    </SignInButton>
+                }
+            </UserCircle>}
 
         </NavBarDiv >
-
     )
 }
 

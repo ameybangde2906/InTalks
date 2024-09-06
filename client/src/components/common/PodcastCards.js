@@ -24,13 +24,13 @@ const FilterContainer = styled.div`
 
 const Topic = styled.div`
   color: ${({ theme }) => theme.text_primary};
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 500;
   display: flex;
   justify-content: space-between;
   text-transform: capitalize;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   @media (max-width: 768px) {
     font-size: 18px;
   }
@@ -83,7 +83,7 @@ const PodcastCards = ({ feedType, userId, query }) => {
 
   const isUploadsArray = Array.isArray(uploads);
 
-  const skeletonCount = uploads ? uploads?.length : 8;
+  const skeletonCount = 8;
 
   return (
     <DashboardMain>

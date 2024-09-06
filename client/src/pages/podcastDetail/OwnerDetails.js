@@ -17,7 +17,7 @@ padding: 10px;
 `
 const PodcastName = styled.div`
 color: ${({ theme }) => theme.text};
-font-size: 20px;
+font-size: 18px;
 font-weight: 500;
 margin-bottom: 10px;
 display: -webkit-box;
@@ -58,11 +58,10 @@ font-size: 13px;
 `
 const FollowButton = styled.button`
 width:max-content;
-font-weight: 500;
-font-size:14px ;
-padding:5px 10px;
-background: ${({ theme }) => theme.button_text};
+background-color: ${({ theme }) => theme.text_secondary};
 color: ${({ theme }) => theme.bg};
+font-size:12px ;
+padding:5px 10px;
 border-radius: 20px;
 display: flex;
 align-items: center;
@@ -76,11 +75,10 @@ gap: 3px;
 
 const LikeButton = styled.button`
 min-width: max-content;
-font-weight: 500;
-font-size:14px ;
-padding: 4px 8px;
-background: ${({ theme }) => theme.button_text};
+padding: 3px 8px;
+background-color: ${({ theme }) => theme.text_secondary};
 color: ${({ theme }) => theme.bg};
+font-size:12px;
 border-radius: 20px;
 display: flex;
 align-items: center;
@@ -98,12 +96,11 @@ const LikeText=styled.div`
 `
 
 const SaveButton = styled.button`
-height: 31px;
-font-weight: 500;
-font-size:14px;
+height: 29px;
 padding: 3px 8px;
-background: ${({ theme }) => theme.button_text};
+background-color: ${({ theme }) => theme.text_secondary};
 color: ${({ theme }) => theme.bg};
+font-size:12px ;
 border-radius: 20px;
 display: flex;
 align-items: center;

@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from "styled-components";
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation,useQueryClient } from '@tanstack/react-query';
 import { endPoint } from '../../utils/Constants';
 import { Link } from 'react-router-dom';
-import { MoreVert } from '@mui/icons-material';
 import { getInitials } from '../../utils/Initials';
 
 
@@ -60,6 +59,7 @@ display:-webkit-box;
 -webkit-box-orient:vertical;
 height: 45px;
 width: 238px;
+font-size: 14px;
 text-overflow:ellipsis;
 text-transform: capitalize;
 color:${({ theme }) => theme.text_primary};
@@ -111,9 +111,8 @@ color:${({ theme }) => theme.text_secondary};
 width:max-content;
 `;
 
-const PodcastCard = ({ upload,}) => {
-    const { data: authUser } = useQuery({ queryKey: ["authUser"] });
-  
+
+const PodcastCard = ({ upload, }) => {
 
     const queryClient = useQueryClient();
     const { mutate, isPending } = useMutation({
@@ -142,11 +141,6 @@ const PodcastCard = ({ upload,}) => {
             queryClient.invalidateQueries(["authUser"]);
         },
     })
-
-    const savePost = (e) => {
-        e.preventDefault()
-        mutate()
-    }
 
 
     return (
@@ -184,8 +178,7 @@ const PodcastCard = ({ upload,}) => {
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Link to={`/podcast/${upload._id}`}>
                                     <Title>{upload?.episodeName}</Title>
-                                </Link>
-                                <MoreVert sx={{ fontSize: '20px', cursor: 'pointer' }} />
+                                </Link>            
                             </div>
 
                             <CreatorsInfo>
@@ -207,4 +200,4 @@ const PodcastCard = ({ upload,}) => {
     )
 }
 
-export default PodcastCard
+export default PodcastCard   
